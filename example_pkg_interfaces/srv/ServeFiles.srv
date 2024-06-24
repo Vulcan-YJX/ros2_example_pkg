@@ -1,0 +1,9 @@
+# Service files description
+
+# Max number of poses to query 
+int32 max_count
+---
+# Result
+# indicate successful run of the service
+bool success
+
