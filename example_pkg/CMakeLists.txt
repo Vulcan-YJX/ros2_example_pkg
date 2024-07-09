@@ -12,7 +12,7 @@ ament_auto_find_build_dependencies()
 
 include_directories(include)
 
-ament_auto_add_library(vision_manager_lib SHARED
+ament_auto_add_library(${PROJECT_NAME}_lib SHARED
     src/user_function.cpp
     src/example_node.cpp
 )
