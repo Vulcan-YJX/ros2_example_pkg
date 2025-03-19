@@ -17,7 +17,7 @@ ament_auto_add_library(${PROJECT_NAME}_lib SHARED
     src/example_node.cpp
 )
 
-ament_auto_add_executable(example_node
+ament_auto_add_executable(${PROJECT_NAME}_node
     src/main.cpp
 )
 
