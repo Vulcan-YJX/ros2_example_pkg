@@ -13,8 +13,8 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='example_pkg',
-            executable='example_node',
-            name='example_node',
+            executable='example_pkg_node',
+            name='example_pkg_node',
             output='screen',
             parameters=[config]
         )
