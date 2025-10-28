@@ -21,6 +21,27 @@ ExampleNode::ExampleNode(const rclcpp::NodeOptions & options) : Node("example_no
   this->get_parameter("value1", value1_);
   this->get_parameter("value2", value2_);
   RCLCPP_INFO(this->get_logger(), "value1 : '%f'", value1_);
+  mqtt_client_ = std::make_unique<mqtt::async_client>(
+      mqtt_config_.broker_ip, mqtt_config_.client_id);
+
+  mqtt_callback_ = std::make_shared<Callback>();
+  mqtt_client_->set_callback(*mqtt_callback_);
+  try {
+    mqtt::connect_options connOpts;
+    connOpts.set_clean_session(true);
+    connOpts.set_user_name(mqtt_config_.user_name);
+    connOpts.set_password(mqtt_config_.passwd);
+
+    std::cout << "Connecting to MQTT broker..." << std::endl;
+    mqtt_client_->connect(connOpts)->wait();
+    std::cout << "Connected to MQTT broker" << std::endl;
+
+    mqtt_client_->subscribe("rec/topic", 0)->wait();
+    mqtt_client_->start_consuming();
+
+  } catch (const std::exception & e) {
+    std::cerr << e.what() << '\n';
+  }
 
   subscription1_ = this->create_subscription<std_msgs::msg::Float64>(
     "topic1", 10, std::bind(&ExampleNode::topic1_callback, this, std::placeholders::_1));
@@ -43,8 +64,14 @@ void ExampleNode::topic2_callback(const std_msgs::msg::Float64::SharedPtr msg)
 
 void ExampleNode::timer_callback()
 {
-  auto message = std_msgs::msg::Float64();
-  message.data = add_function(value1_, value2_);
-  RCLCPP_INFO(this->get_logger(), "Publishing: '%f'", message.data);
-  publisher_->publish(message);
+  auto ros_message = std_msgs::msg::Float64();
+  ros_message.data = add_function(value1_, value2_);
+  RCLCPP_INFO(this->get_logger(), "Publishing: '%f'", ros_message.data);
+  publisher_->publish(ros_message);
+
+  nlohmann::json json_message;
+  json_message["w"] = ros_message.data;
+  mqtt::message_ptr mqtt_msg = mqtt::make_message(mqtt_config_.topic, json_message.dump());
+  mqtt_msg->set_qos(0);
+  mqtt_client_->publish(mqtt_msg)->wait();
 }

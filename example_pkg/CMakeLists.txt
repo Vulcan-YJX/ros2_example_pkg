@@ -10,6 +10,9 @@ set(CMAKE_CXX_FLAGS "-std=c++17 -Wall -O3")
 find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
 
+find_package(nlohmann_json REQUIRED)
+find_package(PahoMqttCpp REQUIRED)
+
 include_directories(include)
 
 ament_auto_add_library(${PROJECT_NAME}_lib SHARED
@@ -19,6 +22,11 @@ ament_auto_add_library(${PROJECT_NAME}_lib SHARED
 
 ament_auto_add_executable(${PROJECT_NAME}_node
     src/main.cpp
+)
+
+target_link_libraries(${PROJECT_NAME}_node
+  nlohmann_json::nlohmann_json
+  PahoMqttCpp::paho-mqttpp3
 )
 
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})

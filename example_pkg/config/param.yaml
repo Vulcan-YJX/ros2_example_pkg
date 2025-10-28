@@ -1,5 +1,5 @@
 /**:
   example_node:
     ros__parameters:
-      value1: 1.0
-      value2: 2.0
+      broker_ip: "ws://127.0.0.1:1883"
+      mqtt_passwd: ""

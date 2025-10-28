@@ -23,6 +23,18 @@
 #include "example_pkg/user_function.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/float64.hpp"
+#include "nlohmann/json.hpp"
+#include "mqtt/async_client.h"
+#include "example_pkg/mqtt_callback.hpp"
+
+struct mqtt_info
+{
+  std::string broker_ip = "ws://127.0.0.1:1883";
+  std::string user_name = "namespace";
+  std::string passwd = "";
+  std::string topic = "local/path";
+  std::string client_id = "";
+};
 
 class ExampleNode : public rclcpp::Node
 {
@@ -45,6 +57,11 @@ private:
   rclcpp::TimerBase::SharedPtr timer_;
   double value1_;
   double value2_;
+
+  mqtt_info mqtt_config_;
+  std::unique_ptr<mqtt::async_client> mqtt_client_;
+  std::shared_ptr<Callback> mqtt_callback_;
+
 };
 
 #endif  // EXAMPLE_PKG__EXAMPLE_NODE_HPP_
