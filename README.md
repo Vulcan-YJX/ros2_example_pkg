@@ -42,7 +42,7 @@
 
 ```bash
 # install mqtt broker.
-sudo apt install mosquitto-dev
+sudo apt install mosquitto-dev nlohmann-json3-dev
 
 #change ws port.
 echo -e "allow_anonymous true\nlistener 1883\nprotocol websockets" | sudo tee /etc/mosquitto/conf.d/example.conf > /dev/null
