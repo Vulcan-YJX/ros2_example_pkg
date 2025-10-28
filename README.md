@@ -6,7 +6,7 @@
 <p align="center">
     语言：<a href="./docs/docs_en/README_EN.md"><strong>English</strong></a> / <strong>中文</strong>
 </p>
-​	这是一个 exmaple_node 的 README 案例，订阅两个数据并按照固定的频率发布两个数据的和。
+​	这是一个 `Ros2` 的附带 `mqtt`的功能节点。一些数据可以使用 `mqtt` 的进行传输，尤其是远程控制指令。
 
 ## Basic Information
 
@@ -41,7 +41,15 @@
 ## Build Package
 
 ```bash
-# if have extra dependencies
-# apt install <libdepend-dev>
-colcon build --packages-select example_pkg
+# install mqtt broker.
+sudo apt install mosquitto-dev
+
+#change ws port.
+echo -e "allow_anonymous true\nlistener 1883\nprotocol websockets" | sudo tee /etc/mosquitto/conf.d/autocube.conf > /dev/null
+
+sudo systemctl restart mosquitto
+
+colcon build
+source install/setup.bash
+ros2 launch example_pkg example.launch.py
 ```
