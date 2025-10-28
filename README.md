@@ -45,7 +45,7 @@
 sudo apt install mosquitto-dev
 
 #change ws port.
-echo -e "allow_anonymous true\nlistener 1883\nprotocol websockets" | sudo tee /etc/mosquitto/conf.d/autocube.conf > /dev/null
+echo -e "allow_anonymous true\nlistener 1883\nprotocol websockets" | sudo tee /etc/mosquitto/conf.d/example.conf > /dev/null
 
 sudo systemctl restart mosquitto
 
