@@ -6,7 +6,7 @@
 <p align="center">
     语言：<a href="./docs/docs_en/README_EN.md"><strong>English</strong></a> / <strong>中文</strong>
 </p>
-​	这是一个 `Ros2` 的附带 `mqtt`的功能节点。一些数据可以使用 `mqtt` 的进行传输，尤其是远程控制指令。
+​	这是一个 `Ros2` 的附带 `mqtt` 的功能节点。一些数据可以使用 `mqtt` 的进行传输，尤其是远程控制指令。
 
 ## Basic Information
 
