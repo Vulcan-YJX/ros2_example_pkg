@@ -33,7 +33,8 @@ class MQTTBridge(Node):
         turn_speed = self.get_parameter('turn_speed').get_parameter_value().double_array_value
         self.get_logger().info(f"forward_speed: {list(forward_speed)}")
         self.get_logger().info(f"turn_speed: {list(turn_speed)}")
-        self.mqtt_connect()
+        timer_period = 3  # seconds
+        self.online_timer = self.create_timer(timer_period, self.online_checker)
         
     def destroy_node(self):
         super().destroy_node()
@@ -71,6 +72,10 @@ class MQTTBridge(Node):
             self.mqtt_client.loop_stop()
             self.mqtt_client.disconnect()
             self.get_logger().info("Disconnected from Remote MQTT broker")
+
+    def online_checker(self):
+        if not self.mqtt_connected:
+            self.mqtt_connect()
 
 def main(args=None):
     rclpy.init(args=args)
