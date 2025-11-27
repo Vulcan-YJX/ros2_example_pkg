@@ -58,6 +58,7 @@ private:
   double value1_;
   double value2_;
 
+  bool mqtt_connect_ = false;
   mqtt_info mqtt_config_;
   std::unique_ptr<mqtt::async_client> mqtt_client_;
   std::shared_ptr<Callback> mqtt_callback_;

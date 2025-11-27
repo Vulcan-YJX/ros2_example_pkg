@@ -26,23 +26,28 @@ ExampleNode::ExampleNode(const rclcpp::NodeOptions & options) : Node("example_no
 
   mqtt_callback_ = std::make_shared<Callback>();
   mqtt_client_->set_callback(*mqtt_callback_);
-  try {
-    mqtt::connect_options connOpts;
-    connOpts.set_clean_session(true);
-    connOpts.set_user_name(mqtt_config_.user_name);
-    connOpts.set_password(mqtt_config_.passwd);
+  while (!mqtt_connect_)
+  {  
+    try {
+      mqtt::connect_options connOpts;
+      connOpts.set_clean_session(true);
+      connOpts.set_user_name(mqtt_config_.user_name);
+      connOpts.set_password(mqtt_config_.passwd);
 
-    std::cout << "Connecting to MQTT broker..." << std::endl;
-    mqtt_client_->connect(connOpts)->wait();
-    std::cout << "Connected to MQTT broker" << std::endl;
+      std::cout << "Connecting to MQTT broker..." << std::endl;
+      mqtt_client_->connect(connOpts)->wait();
+      std::cout << "Connected to MQTT broker" << std::endl;
 
-    mqtt_client_->subscribe("rec/topic", 0)->wait();
-    mqtt_client_->start_consuming();
+      mqtt_client_->subscribe("rec/topic", 0)->wait();
+      mqtt_client_->start_consuming();
+      mqtt_connect_ = true;
 
-  } catch (const std::exception & e) {
-    std::cerr << e.what() << '\n';
+    } catch (const std::exception & e) {
+      mqtt_connect_ = false;
+      std::this_thread::sleep_for(std::chrono::seconds(1));
+      std::cerr << e.what() << '\n';
+    }
   }
-
   subscription1_ = this->create_subscription<std_msgs::msg::Float64>(
     "topic1", 10, std::bind(&ExampleNode::topic1_callback, this, std::placeholders::_1));
   subscription2_ = this->create_subscription<std_msgs::msg::Float64>(
